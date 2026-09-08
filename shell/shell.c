@@ -8,7 +8,6 @@ int main()
 {
    char intput[100];
    char *args[10];
-
    while(1)
    {
       int i = 0;
@@ -25,22 +24,34 @@ int main()
       }
       args[i] = NULL;
 
-      pid_t pid = fork();
-      if(pid == 0)
+      if(strcmp(args[0], "exit") == 0)
       {
-        // buradayım = ben child'ım
-        execvp(args[0], args);
-        perror("execvp basarisiz");
-        exit(1);
+        exit(0);
       }
-      else if  (pid > 0)
+      else if(strcmp(args[0], "cd")  == 0)
       {
-        // buradayım = ben parent'ım
-        wait(NULL);  // çocuğun bitmesini bekle
+        chdir(args[1]);
       }
       else
       {
-        printf("fork basarisiz\n");
+        pid_t pid = fork();
+        if(pid == 0)
+        {
+
+          // buradayım = ben child'ım
+          execvp(args[0], args);
+          perror("execvp basarisiz");
+          exit(1);
+        }
+        else if  (pid > 0)
+        {
+          // buradayım = ben parent'ım
+          wait(NULL);  // çocuğun bitmesini bekle
+        }
+        else
+        {
+          printf("fork basarisiz\n");
+        }
       }
       printf("%s\n", intput);
     }
