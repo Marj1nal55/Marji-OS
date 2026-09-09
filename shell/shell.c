@@ -3,6 +3,7 @@
 #include<stdlib.h>
 #include<unistd.h>
 #include<sys/wait.h>
+#include<fcntl.h>
 
 void parse_command(char *command, char *args[])
 {
@@ -21,12 +22,23 @@ int main()
    char intput[100];
    char *args[10];
    char *args2[10];
+   char *dosya_adi = NULL;
    while(1)
    {
 
       printf("$:");
       fgets(intput, sizeof(intput), stdin);
       intput[strcspn(intput, "\n")] = '\0';
+      char *yonlendirme =strchr(intput, '>');
+      if (yonlendirme != NULL)
+       {
+         *yonlendirme = '\0';
+         dosya_adi = yonlendirme +1;
+         while(*dosya_adi == ' ')
+         {
+           dosya_adi++;
+         }
+       }
       char *komut1 = strtok(intput, "|");
       char *komut2 = strtok(NULL, "|");
       parse_command(komut1, args);
@@ -45,7 +57,31 @@ int main()
       }
       else
       {
-        if(komut2 != NULL)
+        if (yonlendirme != NULL)
+        {
+          int fd = open(dosya_adi, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+          pid_t pid = fork();
+          if(pid == 0)
+          {
+            // ben child'ım, çıktım dosyaya gitsin
+            dup2(fd, STDOUT_FILENO);
+            close(fd);
+            execvp(args[0], args);
+            perror("execvp basarisiz");
+            exit(1);
+          }
+          else if (pid > 0)
+          {
+           // parent
+           close(fd);
+           wait(NULL);
+          }
+          else
+          {
+            printf("fork basarisiz\n");
+          }
+        }
+        else if(komut2 != NULL)
         {
           int fd[2];
           pipe(fd);
