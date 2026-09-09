@@ -17,6 +17,30 @@ void parse_command(char *command, char *args[])
    args[i] = NULL;
 }
 
+void komut_calistir(char *args[], int giris_fd, int cikis_fd, int kapatilacak_fd) {
+    pid_t pid = fork();
+    if (pid == 0) {
+        if (giris_fd != -1) {
+            dup2(giris_fd, STDIN_FILENO);
+            close(giris_fd);
+        }
+        if (cikis_fd != -1) {
+            dup2(cikis_fd, STDOUT_FILENO);
+            close(cikis_fd);
+        }
+        if (kapatilacak_fd != -1) {
+            close(kapatilacak_fd);
+        }
+        execvp(args[0], args);
+        perror("execvp basarisiz");
+        exit(1);
+    } else if (pid > 0) {
+        // parent
+    } else {
+        printf("fork basarisiz\n");
+    }
+}
+
 int main()
 {
    char intput[100];
@@ -46,7 +70,6 @@ int main()
         parse_command(komut2, args2);
        }
 
-      if (komut2 != NULL) printf("args2[0]=%s\n", args2[0]);
       if(strcmp(args[0], "exit") == 0)
       {
         exit(0);
@@ -60,52 +83,16 @@ int main()
         if (yonlendirme != NULL)
         {
           int fd = open(dosya_adi, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-          pid_t pid = fork();
-          if(pid == 0)
-          {
-            // ben child'ım, çıktım dosyaya gitsin
-            dup2(fd, STDOUT_FILENO);
-            close(fd);
-            execvp(args[0], args);
-            perror("execvp basarisiz");
-            exit(1);
-          }
-          else if (pid > 0)
-          {
-           // parent
-           close(fd);
-           wait(NULL);
-          }
-          else
-          {
-            printf("fork basarisiz\n");
-          }
+          komut_calistir(args, -1, fd, -1);
+          close(fd);
+          wait(NULL);
         }
         else if(komut2 != NULL)
         {
           int fd[2];
-          pipe(fd);
-          pid_t pid1 = fork();
-          if (pid1 == 0)
-          {
-            // ben ls child'ıyım
-            dup2(fd[1], STDOUT_FILENO);
-            close(fd[0]);
-            close(fd[1]);
-            execvp(args[0], args);
-            perror("execvp basarisiz");
-            exit(1);
- 	  }
-          pid_t pid2 = fork();
-          if (pid2 == 0)
-          {
-            dup2(fd[0], STDIN_FILENO);
-            close(fd[0]);
-            close(fd[1]);
-            execvp(args2[0], args2);
-            perror("execvp basarisiz");
-            exit(1);
-          }
+          pipe (fd);
+          komut_calistir(args, -1, fd[1], fd[0]);
+          komut_calistir(args2, fd[0], -1, fd[1]);
           close(fd[0]);
           close(fd[1]);
           wait(NULL);
@@ -113,24 +100,8 @@ int main()
         }
         else
         {
-          pid_t pid = fork();
-          if(pid == 0)
-          {
-
-            // buradayım = ben child'ım
-            execvp(args[0], args);
-            perror("execvp basarisiz");
-            exit(1);
-          }
-          else if  (pid > 0)
-          {
-            // buradayım = ben parent'ım
-            wait(NULL);  // çocuğun bitmesini bekle
-          }
-          else
-          {
-            printf("fork basarisiz\n");
-          }
+          komut_calistir(args, -1, -1, -1);
+          wait(NULL);
         }
       }
     }

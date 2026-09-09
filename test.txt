@@ -1,8 +1,0 @@
-total 22
-drwx------.  4 u0_a380 u0_a380 3452 Sep  9 12:35 .
-drwx------. 24 u0_a380 u0_a380 3452 Sep  9 11:44 ..
-drwx------.  7 u0_a380 u0_a380 3452 Sep  9 11:43 .git
--rw-------.  1 u0_a380 u0_a380   16 Sep  9 00:43 .gitignore
--rw-------.  1 u0_a380 u0_a380 1987 Sep  9 11:43 README.md
-drwx------.  2 u0_a380 u0_a380 3452 Sep  9 12:36 shell
--rw-------.  1 u0_a380 u0_a380    0 Sep  9 12:36 test.txt
