@@ -1,2 +1,6 @@
 shell/shell
 *.o
+*.txt
+malloc/test_sbrk
+malloc/deneme2
+malloc/my_malloc
