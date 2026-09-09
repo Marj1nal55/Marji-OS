@@ -51,7 +51,7 @@ anything that eventually touches a kernel.
 - [x] Built-ins: `cd`, `exit`
 - [x] Pipes (`|`)
 - [x] Output redirection (`>`)
-- [ ] Input redirection (`<`)
+- [x] Input redirection (`<`)
 - [ ] Quoted arguments
 - [ ] Command history
 - [ ] Environment variables

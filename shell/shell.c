@@ -47,6 +47,7 @@ int main()
    char *args[10];
    char *args2[10];
    char *dosya_adi = NULL;
+   char *giris_dosya_adi = NULL;
    while(1)
    {
 
@@ -61,6 +62,16 @@ int main()
          while(*dosya_adi == ' ')
          {
            dosya_adi++;
+         }
+       }
+      char *giris_yonlendirme =strchr(intput, '<');
+      if (giris_yonlendirme != NULL)
+       {
+         *giris_yonlendirme = '\0';
+         giris_dosya_adi = giris_yonlendirme +1;
+         while(*giris_dosya_adi == ' ')
+         {
+           giris_dosya_adi++;
          }
        }
       char *komut1 = strtok(intput, "|");
@@ -84,6 +95,13 @@ int main()
         {
           int fd = open(dosya_adi, O_CREAT | O_WRONLY | O_TRUNC, 0644);
           komut_calistir(args, -1, fd, -1);
+          close(fd);
+          wait(NULL);
+        }
+        else if (giris_yonlendirme != NULL)
+        {
+          int fd = open(giris_dosya_adi, O_RDONLY);
+          komut_calistir(args, fd, -1, -1);
           close(fd);
           wait(NULL);
         }

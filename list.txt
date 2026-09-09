@@ -1,0 +1,10 @@
+total 30
+drwx------.  4 u0_a380 u0_a380 3452 Sep 10 00:43 .
+drwx------. 24 u0_a380 u0_a380 3452 Sep  9 14:04 ..
+drwx------.  7 u0_a380 u0_a380 3452 Sep  9 14:03 .git
+-rw-------.  1 u0_a380 u0_a380   16 Sep  9 00:43 .gitignore
+-rw-------.  1 u0_a380 u0_a380 1067 Sep  9 14:01 LICENSE
+-rw-------.  1 u0_a380 u0_a380 2877 Sep  9 14:01 README.md
+-rw-------.  1 u0_a380 u0_a380    0 Sep 10 00:43 list.txt
+drwx------.  2 u0_a380 u0_a380 3452 Sep 10 00:43 shell
+-rw-------.  1 u0_a380 u0_a380   33 Sep 10 00:41 test.txt
