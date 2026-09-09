@@ -56,7 +56,10 @@ anything that eventually touches a kernel.
 - [ ] Command history
 - [ ] Environment variables
 
-**Phase 2 — Systems programming**
+**Phase 2 — Systems programming** *(started)*
+- [x] `sbrk()` basics — requesting and observing heap memory
+- [x] `struct`-based block header design (size, free flag, next pointer)
+- [ ] Full `malloc()`/`free()` implementation
 Deeper C: memory allocators, file systems, threading, IPC. Bridging from
 "using Linux" to "understanding how Linux works underneath."
 
