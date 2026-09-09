@@ -21,7 +21,7 @@ anything that eventually touches a kernel.
 - [x] Running real Linux commands (`fork` + `execvp` + `wait`)
 - [x] Built-in command: `cd`
 - [x] Built-in command: `exit`
-- [×] Pipes (`|`)
+- [x] Pipes (`|`)
 - [ ] I/O redirection (`>`, `<`)
 - [ ] Command history
 - [ ] Environment variables
