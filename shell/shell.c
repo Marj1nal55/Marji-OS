@@ -34,7 +34,6 @@ int main()
         parse_command(komut2, args2);
        }
 
-      printf("args[0]=%s\n", args[0]);
       if (komut2 != NULL) printf("args2[0]=%s\n", args2[0]);
       if(strcmp(args[0], "exit") == 0)
       {
@@ -46,26 +45,58 @@ int main()
       }
       else
       {
-        pid_t pid = fork();
-        if(pid == 0)
+        if(komut2 != NULL)
         {
-
-          // buradayım = ben child'ım
-          execvp(args[0], args);
-          perror("execvp basarisiz");
-          exit(1);
-        }
-        else if  (pid > 0)
-        {
-          // buradayım = ben parent'ım
-          wait(NULL);  // çocuğun bitmesini bekle
+          int fd[2];
+          pipe(fd);
+          pid_t pid1 = fork();
+          if (pid1 == 0)
+          {
+            // ben ls child'ıyım
+            dup2(fd[1], STDOUT_FILENO);
+            close(fd[0]);
+            close(fd[1]);
+            execvp(args[0], args);
+            perror("execvp basarisiz");
+            exit(1);
+ 	  }
+          pid_t pid2 = fork();
+          if (pid2 == 0)
+          {
+            dup2(fd[0], STDIN_FILENO);
+            close(fd[0]);
+            close(fd[1]);
+            execvp(args2[0], args2);
+            perror("execvp basarisiz");
+            exit(1);
+          }
+          close(fd[0]);
+          close(fd[1]);
+          wait(NULL);
+          wait(NULL);
         }
         else
         {
-          printf("fork basarisiz\n");
+          pid_t pid = fork();
+          if(pid == 0)
+          {
+
+            // buradayım = ben child'ım
+            execvp(args[0], args);
+            perror("execvp basarisiz");
+            exit(1);
+          }
+          else if  (pid > 0)
+          {
+            // buradayım = ben parent'ım
+            wait(NULL);  // çocuğun bitmesini bekle
+          }
+          else
+          {
+            printf("fork basarisiz\n");
+          }
         }
       }
-      printf("%s\n", intput);
     }
     return 0;
 }
